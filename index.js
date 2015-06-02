@@ -128,4 +128,13 @@ Vault.prototype.set = function(key, value) {
   return defer.promise;
 };
 
+/**
+ * [delete description]
+ * @param  {[type]} key [description]
+ * @return {[type]}     [description]
+ */
+Vault.prototype.delete = function(key) {
+  return this.set(key, null);
+};
+
 module.exports = Vault;

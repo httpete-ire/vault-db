@@ -15,3 +15,18 @@
 {"key":"cat","value":{"name":"Bilbo"}}
 {"key":"cat","value":{"name":"Bilbo"}}
 {"key":"cat","value":{"name":"Bilbo"}}
+{"key":"cat","value":{"name":"Bilbo","age":"6 months"}}
+{"key":"person","value":{"name":"pete"}}
+{"key":"person","value":null}
+{"key":"cat","value":{"name":"Bilbo","age":"6 months"}}
+{"key":"person","value":{"name":"pete"}}
+{"key":"person","value":null}
+{"key":"cat","value":{"name":"Bilbo","age":"6 months"}}
+{"key":"person","value":{"name":"pete"}}
+{"key":"person","value":null}
+{"key":"cat","value":{"name":"Bilbo"}}
+{"key":"person","value":{"name":"pete"}}
+{"key":"person","value":null}
+{"key":"cat","value":{"name":"Bilbo"}}
+{"key":"person","value":{"name":"pete"}}
+{"key":"person","value":null}

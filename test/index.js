@@ -69,8 +69,27 @@ describe('Vault database module', function() {
     }).then(function(newData) {
       expect(newData.key).to.equal('cat');
       expect(newData.value.name).to.equal('Bilbo');
+      expect(db.get('cat').name).to.equal('Bilbo');
       done();
     }).done(null, done);
+  });
+
+  it('should delete the object', function(done) {
+
+    db.load()
+    .then(function(data) {
+      return db.set('person', {name: 'pete'});
+    })
+    .then(function(newData) {
+      return db.delete('person');
+    })
+    .then(function() {
+      var result = db.get('pete');
+
+      expect(result).to.equal(null);
+      done();
+    })
+    .done(null, done);
   });
 
 });
