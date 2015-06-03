@@ -1,6 +1,6 @@
 {
   "name": "vault",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "an in-memory DB that is also stored to .db file",
   "main": "index.js",
   "scripts": {
@@ -24,5 +24,8 @@
     "mocha": "^2.2.5",
     "require-dir": "^0.3.0",
     "should": "^6.0.3"
+  },
+  "dependencies": {
+    "q": "^1.4.1"
   }
 }
