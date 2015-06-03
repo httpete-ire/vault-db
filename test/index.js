@@ -1,6 +1,7 @@
 /// <reference path="../typings/mocha/mocha.d.ts"/>
 var expect = require('chai').expect;
 var path = require('path');
+var fs = require('fs');
 
 var Vault = require('./../index.js');
 
@@ -90,6 +91,45 @@ describe('Vault database module', function() {
       done();
     })
     .done(null, done);
+  });
+
+  it('should return a result given a query', function (done) {
+
+    db.load()
+    .then(function(data) {
+      return db.set('person', { name: 'Pete', age: 29, gender: 'male'});
+    })
+    .then(function(data) {
+      return db.search('age', 29);
+    })
+    .then(function(result) {
+      expect(result.name).equal('Pete');
+      done();
+    }).done(null, done);
+
+  });
+
+  it('should return null if result not found', function (done) {
+    db.load()
+    .then(function(data) {
+      return db.set('person', { name: 'Pete', age: 29, gender: 'male'});
+    })
+    .then(function() {
+      return db.delete('person');
+    })
+    .then(function() {
+      return db.search('age', 29);
+    }).then(function(result) {
+      expect(result).to.be.null;
+      done();
+    }).done(null, done);
+  });
+
+  after(function() {
+
+    // restore dummy db
+    fs.createReadStream('./test/fixtures/restore.db').pipe(fs.createWriteStream('./test/fixtures/vault.db'));
+
   });
 
 });

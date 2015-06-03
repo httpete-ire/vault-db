@@ -137,4 +137,48 @@ Vault.prototype.delete = function(key) {
   return this.set(key, null);
 };
 
+/**
+ * search the collection of records for a match according
+ * to the queryType and queryValue. Return the first match
+ * or return null if no object matches the query. The search is
+ * implemented by searching every record in the collection from the
+ * first to the last record till a match is found, is extremley slow if
+ * the collection is large
+ *
+ * eg
+ * {"key":"person","value":{"name":"Dec" , "age":22, "gender":"male"}}
+ * db.search('name', 'dec') // will return the above object
+ *
+ * altough this method is not asynchronous it still returns a promise
+ * to keep it consistent with the other methods
+ *
+ * @param  {String} queryType  : type of property to query
+ * @param  {String} queryValue : value of property to query
+ * @return {Promise}
+ */
+Vault.prototype.search = function(queryType, queryValue) {
+  var defer = q.defer();
+  var keys = Object.keys(this._records);
+  var record;
+  var i = 0;
+  var result = null;
+
+  while (!result && i !== keys.length) {
+    record = this._records[keys[i]];
+
+    // if the type is defined on the record and
+    // is equal to what we are searching for set
+    // found to true and set result to record
+    if (record[queryType] && record[queryType] === queryValue) {
+      result = record;
+    } else {
+      i++;
+    }
+  }
+
+  defer.resolve(result);
+
+  return defer.promise;
+};
+
 module.exports = Vault;
