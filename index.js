@@ -172,7 +172,7 @@ Vault.prototype.set = function(key, value) {
 };
 
 /**
- * a convenience method for deleting a record from the collection and settings
+ * A convenience method for deleting a record from the collection and settings
  * its value to null in the .db file.
  *
  * @param  {String} key : key to delete
