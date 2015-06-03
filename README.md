@@ -7,11 +7,11 @@ This is an experiment to learn streams and promises so **DO NOT USE** in product
 #Documentation
 
 * [Vault](#vault)
-* [Load](#load)
-* [Get](#get)
-* [Set](#set)
-* [Delete](#delete)
-* [Search](#search)
+* [load](#load)
+* [get](#get)
+* [set](#set)
+* [delete](#delete)
+* [search](#search)
 
 ##<a name="vault"></a>Vault
 
