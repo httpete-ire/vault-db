@@ -4,15 +4,23 @@ var q = require('q');
 'use strict';
 
 /**
- * [Vault description]
- * @param {[type]} path [description]
+ * Vault is a key, value database that is stored in-memeory and writen
+ * to a db file. The path to the file is passed as a parameter to the
+ * constructor. The valut object also contains a an object that stores
+ * the records and a write stream to the db file.
+ *
+ * !!!!WARNING do not use in production
+ *
+ * @param {String} path : path of db to laod and save to
  */
 function Vault(path) {
   this.path = path;
   this.loaded = false;
   this._records = {};
 
-  //
+  // create a writable stream to the db file, set the encoding of
+  // the file to handle 'utf8', the flags option 'a' opens a file for
+  // appending data too, if the file does not exist it is created.
   this._writeStream = fs.createWriteStream(this.path, {
     encoding: 'utf8',
     flags: 'a'
@@ -20,8 +28,20 @@ function Vault(path) {
 }
 
 /**
- * [load description]
- * @return {[type]} [description]
+ * Load the db file that is set in the constructor and build an object
+ * with using the keys and values of the parsed db file. If a value is
+ * set to null it will delete the reference to the record in the
+ * collection.
+ *
+ * The stream interface is used to read the file, when the 'end' event
+ * is fired it will resolve the promise with the records. If an 'err'
+ * event is fired the promise will be rejected with the err object.
+ *
+ * If the JSON.parse method throws an error the promise is rejected.
+ *
+ * The 'loaded' variable ensures that the db file is only read once
+ *
+ * @return {Promise}
  */
 Vault.prototype.load = function() {
   var defer = q.defer();
@@ -91,18 +111,41 @@ Vault.prototype.load = function() {
 };
 
 /**
- * [get description]
- * @param  {[type]} key [description]
- * @return {[type]}     [description]
+ * Return the record from the collection using the key value, if
+ * record is a duplicate it will return the last instance of the record.
+ * Will return null if no record exists
+ *
+ * eg
+ * {"key":"cat","value":{"name":"Bilbo"}}
+ * db.get('cat') // will return {"name":"Bilbo"}
+ *
+ *
+ * @param  {String} key : key of record to retrieve
+ * @return {Object}     : value of object to return
  */
 Vault.prototype.get = function(key) {
   return this._records[key] || null;
 };
 
 /**
- * [set description]
- * @param {[type]} key   [description]
- * @param {[type]} value [description]
+ * Set a record in the db by key and value. If value is set to
+ * null it will delete the object reference from the in-memory db.
+ * The data is also persisted in a .db file using a write stream,
+ * the object is converted to a string using the JSON.stringify method.
+ * When the write stream has complete the promise is resolved with the JSON
+ * object that was inserted.
+ *
+ * eg
+ * { key: 'car', value: { type: 'car', make: 'BMW', price: 50000}}
+ *
+ * db.set().then(function(insertedData) {
+ *   console.log(insertedData); // object that was inserted
+ * });
+ *
+ * @param {String} key : string value to store record by
+ * @param {JSON} value : JSON object to insert
+ *
+ * @return {Promise}
  */
 Vault.prototype.set = function(key, value) {
   var defer = q.defer();
@@ -129,16 +172,18 @@ Vault.prototype.set = function(key, value) {
 };
 
 /**
- * [delete description]
- * @param  {[type]} key [description]
- * @return {[type]}     [description]
+ * a convenience method for deleting a record from the collection and settings
+ * its value to null in the .db file.
+ *
+ * @param  {String} key : key to delete
+ * @return {Promise}
  */
 Vault.prototype.delete = function(key) {
   return this.set(key, null);
 };
 
 /**
- * search the collection of records for a match according
+ * Search the collection of records for a match according
  * to the queryType and queryValue. Return the first match
  * or return null if no object matches the query. The search is
  * implemented by searching every record in the collection from the
